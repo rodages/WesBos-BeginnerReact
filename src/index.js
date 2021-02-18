@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import App from './components/App';
 import "./css/style.css";
+import Router from "./components/Router"
 
-
-render(<App/>, document.querySelector("#main"))
+render(<Router/>, document.querySelector("#main"))
 
