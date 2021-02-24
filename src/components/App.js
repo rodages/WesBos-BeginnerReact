@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import ScorePicker from './StorePicker'
 import Inventory from './Inventory'
 import Header from './Header'
-import Order from './Order'
-import sampleFishes from '../sample-fishes'
-import Fish from "./Fish"
+import Order from './Order';
+import sampleFishes from '../sample-fishes';
+import Fish from "./Fish";
+import base from "../base";
 
 
 
@@ -14,9 +15,38 @@ class App extends Component {
     fishes: {},
     order: {},
   };
+
+  //will run once App component is displayed
+  componentDidMount() {
+    const { params } = this.props.match
+    //load data from localstorage 
+    const localStorageRef = localStorage.getItem(params.storeId);
+    if (localStorageRef) {
+      //setting state of order after converting string to object
+      this.setState({ order : JSON.parse(localStorageRef)})
+    }
+    //reference to the instance of the store @ database
+    this.ref = base.syncState(`${params.storeId}/fishes`, {
+      context: this,
+      //what is being synced
+      state: 'fishes'
+    });
+  }
+
+  
+  componentWillUnmount() {
+    //prevent memory leak by unmounting the ref to selected store once current instance of App is not active
+    base.removeBinding(this.ref)
+  }
+
+  componentDidUpdate() {
+    //key on the left, value on the right, JSON.stringify will help to store object in a string
+    localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order));
+    console.log(this.state.order)
+  }
+
   //needs to be passed to a child
   addFish = (fish) => {
-    console.log("adding a fish");
     //take a copy of current state via spread
     const fishes = { ...this.state.fishes };
     //add the new fish
