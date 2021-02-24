@@ -6,7 +6,9 @@ class Order extends Component {
      const fish = this.props.fishes[key];
      //amount of current fishes
     const count = this.props.order[key];
-    const isAvailable = fish.status === "available";
+    const isAvailable = fish && fish.status === "available";
+    //checks if the fish is loaded from local storage before displaying
+    if (!fish) return null; 
     if (!isAvailable) {
       return <li key={key}>Sorry {fish ? fish.name : 'fish'} is no longer available </li>
     }
@@ -14,6 +16,7 @@ class Order extends Component {
       {count}lbs {fish.name}
 
       {formatPrice(count * fish.price)}
+      <button onClick={()=>this.props.removeFromOrder (key)}>X</button>
     </li>
 }
 
@@ -27,7 +30,8 @@ class Order extends Component {
       //amount of current fishes
       const count = this.props.order[key];
       //bool of if fish item exists AND is available
-      const isAvailable = fish && fish.status === 'available';
+      const isAvailable = fish && fish.status === "available";
+      if (!fish) return null; 
       if (isAvailable) {
         return prevTotal + (count * fish.price)
       } else {
