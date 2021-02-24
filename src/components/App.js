@@ -42,7 +42,6 @@ class App extends Component {
   componentDidUpdate() {
     //key on the left, value on the right, JSON.stringify will help to store object in a string
     localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order));
-    console.log(this.state.order)
   }
 
   //needs to be passed to a child
@@ -57,6 +56,12 @@ class App extends Component {
       fishes,
     })
   };
+
+  updateFish = (key, updatedFish) => {
+    const fishes = { ...this.state.fishes }
+    fishes[key] = updatedFish;
+    this.setState({fishes})
+  }
 
   loadSampleFishes = () => {
     this.setState({ fishes: sampleFishes });
@@ -84,15 +89,18 @@ class App extends Component {
                 key={key}
                 details={this.state.fishes[key]}
                 //have to pass key as index in order to have access to it, key={key} does not let access this.props.key, but this.props.index is ok
-                addToOrder={this.addToOrder} index={key}
-                />
+                addToOrder={this.addToOrder}
+                index={key}
+              />
             ))}
           </ul>
         </div>
         <Order fishes={this.state.fishes} order={this.state.order} />
         <Inventory
           addFish={this.addFish}
+          updateFish={this.updateFish}
           loadSampleFishes={this.loadSampleFishes}
+          fishes={this.state.fishes}
         />
       </div>
     );
