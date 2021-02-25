@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from "prop-types";
 import { getFunName } from '../helpers';
 
 
 class ScorePicker extends Component {
-
+  static propTypes = {
+    history: PropTypes.object
+  }
   //creates empty ref
   myInput = React.createRef();
 

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import ScorePicker from './StorePicker'
-import Inventory from './Inventory'
-import Header from './Header'
-import Order from './Order';
-import sampleFishes from '../sample-fishes';
+import PropTypes from "prop-types";
+import ScorePicker from "./StorePicker";
+import Inventory from "./Inventory";
+import Header from "./Header";
+import Order from "./Order";
+import sampleFishes from "../sample-fishes";
 import Fish from "./Fish";
 import base from "../base";
-
-
 
 class App extends Component {
   //creating initial state on the parent component to pass it to children
@@ -16,32 +15,38 @@ class App extends Component {
     order: {},
   };
 
+  static propTypes = {
+    match: PropTypes.object,
+  };
+
   //will run once App component is displayed
   componentDidMount() {
-    const { params } = this.props.match
-    //load data from localstorage 
+    const { params } = this.props.match;
+    //load data from localstorage
     const localStorageRef = localStorage.getItem(params.storeId);
     if (localStorageRef) {
       //setting state of order after converting string to object
-      this.setState({ order : JSON.parse(localStorageRef)})
+      this.setState({ order: JSON.parse(localStorageRef) });
     }
     //reference to the instance of the store @ database
     this.ref = base.syncState(`${params.storeId}/fishes`, {
       context: this,
       //what is being synced
-      state: 'fishes'
+      state: "fishes",
     });
   }
 
-  
   componentWillUnmount() {
     //prevent memory leak by unmounting the ref to selected store once current instance of App is not active
-    base.removeBinding(this.ref)
+    base.removeBinding(this.ref);
   }
 
   componentDidUpdate() {
     //key on the left, value on the right, JSON.stringify will help to store object in a string
-    localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order));
+    localStorage.setItem(
+      this.props.match.params.storeId,
+      JSON.stringify(this.state.order)
+    );
   }
 
   //needs to be passed to a child
@@ -54,20 +59,20 @@ class App extends Component {
     this.setState({
       //fishes: fishes
       fishes,
-    })
+    });
   };
 
   updateFish = (key, updatedFish) => {
-    const fishes = { ...this.state.fishes }
+    const fishes = { ...this.state.fishes };
     fishes[key] = updatedFish;
-    this.setState({fishes})
-  }
+    this.setState({ fishes });
+  };
 
   deleteFish = (key) => {
-    const fishes = { ... this.state.fishes }
+    const fishes = { ...this.state.fishes };
     fishes[key] = null;
-    this.setState({ fishes })
-  }
+    this.setState({ fishes });
+  };
 
   loadSampleFishes = () => {
     this.setState({ fishes: sampleFishes });
@@ -81,14 +86,14 @@ class App extends Component {
     //Call setstate to update
     this.setState({
       order,
-    })
+    });
   };
 
-  removeFromOrder = key => {
-    const order = { ... this.state.order };
+  removeFromOrder = (key) => {
+    const order = { ...this.state.order };
     delete order[key];
-    this.setState({order})
-  }
+    this.setState({ order });
+  };
 
   render() {
     return (
@@ -107,11 +112,15 @@ class App extends Component {
             ))}
           </ul>
         </div>
-        <Order fishes={this.state.fishes} order={this.state.order} removeFromOrder={this.removeFromOrder} />
+        <Order
+          fishes={this.state.fishes}
+          order={this.state.order}
+          removeFromOrder={this.removeFromOrder}
+        />
         <Inventory
           addFish={this.addFish}
           updateFish={this.updateFish}
-          deleteFish = {this.deleteFish}
+          deleteFish={this.deleteFish}
           loadSampleFishes={this.loadSampleFishes}
           fishes={this.state.fishes}
         />

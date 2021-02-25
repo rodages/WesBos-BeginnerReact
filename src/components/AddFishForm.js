@@ -1,28 +1,32 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types'
 
 class AddFishForm extends Component {
-    nameRef = React.createRef();
-    priceRef = React.createRef();
-    statusRef = React.createRef();
-    descRef = React.createRef();
-    imageRef = React.createRef();
+  nameRef = React.createRef();
+  priceRef = React.createRef();
+  statusRef = React.createRef();
+  descRef = React.createRef();
+  imageRef = React.createRef();
 
-    createFish = (e) => {
-      e.preventDefault();
-      //creates fish object according to the refs
-        const fish = {
-            name: this.nameRef.current.value,
-            //to make it to number 
-          price: parseFloat(this.priceRef.current.value),
-          status: this.statusRef.current.value,
-          desc: this.descRef.current.value,
-          image: this.imageRef.current.value,
-      };
-      //calls parent function
-        this.props.addFish(fish)
-        //refresh the form
-        e.currentTarget.reset();
-    }
+  static propTypes = {
+    addFish: PropTypes.func
+  }
+  createFish = (e) => {
+    e.preventDefault();
+    //creates fish object according to the refs
+    const fish = {
+      name: this.nameRef.current.value,
+      //to make it to number
+      price: parseFloat(this.priceRef.current.value),
+      status: this.statusRef.current.value,
+      desc: this.descRef.current.value,
+      image: this.imageRef.current.value,
+    };
+    //calls parent function
+    this.props.addFish(fish);
+    //refresh the form
+    e.currentTarget.reset();
+  };
   render() {
     return (
       <form className="fish-edit" onSubmit={this.createFish}>
@@ -38,7 +42,12 @@ class AddFishForm extends Component {
           <option value="unavailable">Sold Out!</option>
         </select>
         <textarea name="desc" ref={this.descRef} placeholder="Desc" />
-        <input name="image" ref={this.imageRef} type="text" placeholder="Image" />
+        <input
+          name="image"
+          ref={this.imageRef}
+          type="text"
+          placeholder="Image"
+        />
         <button type="submit">+ Add Fish</button>
       </form>
     );
